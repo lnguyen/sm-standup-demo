@@ -1,0 +1,22 @@
+#!/bin/bash
+
+root_path="$PWD"
+
+echo "sm> install"
+
+if [[ ! -x /opt/sm/bin/sm ]]
+then
+  (
+    mkdir -p /usr/local/src && cd /usr/local/src
+    rm -rf sm-*
+    curl -sL https://github.com/sm/sm/tarball/master -o sm-head.tar.gz
+    tar zxf sm-head.tar.gz && mv sm-sm-* sm-head && cd sm-head && ./install
+  ) >> /var/log/standup.setup.log 2>> /var/log/standup.setup.error.log
+  ln -fs /opt/sm/bin/sm /bin/sm
+fi
+
+sm ext install standup /vagrant/exts/sm-standup-ext
+
+sm standup setup
+
+
